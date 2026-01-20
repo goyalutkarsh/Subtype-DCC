@@ -1,0 +1,10 @@
+# Data directory (symbolic link to local data)
+subtype_file
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
