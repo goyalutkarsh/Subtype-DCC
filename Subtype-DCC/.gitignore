@@ -1,0 +1,16 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Model checkpoints (too large)
+save/*/checkpoint_*.tar
+
+# TensorBoard logs
+log/
+
+# Training outputs (generated files)
+results/*.png
+results/*.fea
+results/*.dcc

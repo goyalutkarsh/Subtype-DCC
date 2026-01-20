@@ -1,0 +1,5 @@
+5
+Epoch [0/10]	 Loss: 341.6295347213745
+range(0, 11)
+### Creating features from model ###
+Features shape (1031, 256)
