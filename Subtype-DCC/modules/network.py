@@ -23,8 +23,8 @@ class Network(nn.Module):
         )
 
     def forward(self, x_i, x_j):
-        h_i = self.ae(x_i)
-        h_j = self.ae(x_j)
+        h_i, _, _ = self.ae(x_i)  # Only use full embedding h, ignore z_bio and z_novel
+        h_j, _, _ = self.ae(x_j)
 
         z_i = normalize(self.instance_projector(h_i), dim=1)
         z_j = normalize(self.instance_projector(h_j), dim=1)
@@ -35,7 +35,16 @@ class Network(nn.Module):
         return z_i, z_j, c_i, c_j
 
     def forward_cluster(self, x):
-        h = self.ae(x)
+        h, _, _ = self.ae(x)  # Only use full embedding h
         c = self.cluster_projector(h)
         c = torch.argmax(c, dim=1)
         return c,h
+
+
+class BioAnchorHead(nn.Module):
+    def __init__(self, bio_dim=15, n_anchors=15):
+        super(BioAnchorHead, self).__init__()
+        self.predictor = nn.Linear(bio_dim, n_anchors)
+    
+    def forward(self, z_bio):
+        return self.predictor(z_bio)

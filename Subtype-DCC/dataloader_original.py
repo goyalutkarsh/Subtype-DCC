@@ -25,29 +25,9 @@ def get_feature(cancer_type, batch_size, training):
     feature = minmaxscaler.fit_transform(feature)
     feature = torch.tensor(feature)
     
-    # Load bio-anchors
-    bio_anchor_file = f'bio_anchors_{cancer_type}.csv'
-    try:
-        bio_anchors = pd.read_csv(bio_anchor_file)
-        # Get patient IDs from feature columns
-        patient_ids = fea_CN.columns.tolist()
-        # Reorder bio-anchors to match patient order
-        bio_anchors = bio_anchors.set_index('patient_id').loc[patient_ids].reset_index()
-        # Extract anchor values (skip patient_id column)
-        anchor_values = bio_anchors.iloc[:, 1:].values
-        anchor_values = torch.tensor(anchor_values, dtype=torch.float32)
-        print(f"Loaded bio-anchors: {anchor_values.shape}")
-    except FileNotFoundError:
-        print(f"Warning: No bio-anchors found for {cancer_type}")
-        anchor_values = None
-    
-    # Create dataset with both features and anchors
-    if anchor_values is not None:
-        dataset = TensorDataset(feature, anchor_values)
-    else:
-        dataset = TensorDataset(feature)
-    
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=training)
+    dataloader = DataLoader(feature, batch_size=batch_size, shuffle=training)
 
     return dataloader
+
+
 

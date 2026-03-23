@@ -52,19 +52,20 @@ class Decoder(nn.Module):
 
 
 class AE(nn.Module):
-    def __init__(self,hid_dim=256):
+    def __init__(self, hid_dim=256, bio_dim=15):
         super(AE,self).__init__()
         self.encoder=Encoder()
         self.decoder=Decoder()
 
         self.rep_dim = hid_dim
+        self.bio_dim = bio_dim  # First 15 dimensions for bio-anchors
+        self.novel_dim = hid_dim - bio_dim  # Remaining dimensions (241)
 
     def forward(self, x):
         z = self.encoder(x)
-        x_out = self.decoder(z)
         
-        return z
-
-
-
-    
+        # Split embedding into bio-anchor and novel parts
+        z_bio = z[:, :self.bio_dim]  # First 15 dims
+        z_novel = z[:, self.bio_dim:]  # Remaining 241 dims
+        
+        return z, z_bio, z_novel
